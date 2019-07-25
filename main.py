@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
 import sqlite3
@@ -10,6 +10,7 @@ project_dir = os.path.dirname(os.path.abspath(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///{}".format(os.path.join(project_dir, "blogz.db"))
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
+app.secret_key = 'y337kGcys&zP3B'
 
 
 class User(db.Model):
@@ -40,7 +41,7 @@ class Blog(db.Model):
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-      
+      print("signupexecute")
       if request.method == 'POST':
           user_name = request.form['user_name']
           password = request.form['password']
@@ -65,15 +66,16 @@ def signup():
           db.session.commit()
           session['user'] = user.user_name
           return redirect("/")
-      """
-            else:
-                  return render_template('signup.html')
-      """
+      
+      else:
+            return render_template('signup.html')
+      
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
 
       if request.method == 'POST':
+          print("alphaexecute")
           user_name = request.form['user_name']
           password = request.form['password']
           user = User.query.filter_by(user_name=user_name).first()
@@ -89,7 +91,8 @@ def login():
           if user and user.password == password:
               session['user_name'] = user_name
               flash("Logged in")
-              return redirect('/addconfirm')
+              
+              return redirect('/addconfirm', user_name=user_name, password=password)
        
       return render_template('login.html')
 """
@@ -115,7 +118,7 @@ def test():
 
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
-
+      print("betaexecute")
       #app must acquire identity of a logged in user here as they enter their blog
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
