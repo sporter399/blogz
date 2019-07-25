@@ -41,8 +41,17 @@ class Blog(db.Model):
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
-      print("signupexecute")
+
+
+      """
+      it does not appear that database is actually alquiring and storing info. 
+      the code executes to the next page after signup button as defined in the html
+      to blog entry page, but username of user is not "following" the navigation 
+      and thus fails in add confirm
+      """
+      print("this is before post request method")
       if request.method == 'POST':
+          print("does post request method execute?")
           user_name = request.form['user_name']
           password = request.form['password']
           verify = request.form['verify']
@@ -64,8 +73,9 @@ def signup():
           user = User(user_name=user_name, password=password)
           db.session.add(user, password)
           db.session.commit()
-          session['user'] = user.user_name
-          return redirect("/")
+          session['user_name'] = user.user_name
+          print("this is user" +  str(user))
+          return redirect("/test")
       
       else:
             return render_template('signup.html')
@@ -118,8 +128,9 @@ def test():
 
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
-      print("betaexecute")
+      
       #app must acquire identity of a logged in user here as they enter their blog
+      #code below might be failing because db is not acquiring anything
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
       if request.method == 'POST':
@@ -130,7 +141,7 @@ def addconfirm():
         db.session.add(new_blog_object)      
         db.session.commit()
 
-      return render_template('addconfirm.html', title=title, blog=blog)       
+      return render_template('addconfirm.html', new_blog_object=new_blog_object)       
 
 @app.route('/display/<int:post_id>', methods=['POST', 'GET'])
 def display(post_id):
