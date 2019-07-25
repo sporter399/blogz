@@ -3,7 +3,16 @@
 
     <body>
 
-        
+            <div style='float: right'>
+                    {% if 'user_name' in session %}
+                      {{ session['user_name'] }}
+                      <form action="/logout" method="post" id='logout'>
+                        <input type="submit" value="Log Out" />
+                      </form>
+                    {% else %}
+                      <a href="/login">login</a> | <a href="/signup">register</a>
+                    {% endif %}
+                  </div>
 
         {% with messages = get_flashed_messages(with_categories=True) %}
             <ul>

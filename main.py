@@ -43,15 +43,8 @@ class Blog(db.Model):
 def signup():
 
 
-      """
-      it does not appear that database is actually alquiring and storing info. 
-      the code executes to the next page after signup button as defined in the html
-      to blog entry page, but username of user is not "following" the navigation 
-      and thus fails in add confirm
-      """
-      print("this is before post request method")
       if request.method == 'POST':
-          print("does post request method execute?")
+          
           user_name = request.form['user_name']
           password = request.form['password']
           verify = request.form['verify']
@@ -62,47 +55,52 @@ def signup():
           if password != verify:
               flash('passwords did not match')
               return redirect('/signup')
-          if (len(user_name) <= 3) or (user_name.strip() == ""):
+          if (len(user_name) == 3) or (user_name.strip() == ""):
               flash("User names must contain at least 3 characters.")
               return redirect('/signup')
         
-          if (len(password) <= 3) or (password.strip() == ""):
+          if (len(password) == 3) or (password.strip() == ""):
               flash("Passwords must contain at least 3 characters.")
               return redirect('/signup')
         
-          user = User(user_name=user_name, password=password)
-          db.session.add(user, password)
+          user = User(user_name, password)
+          db.session.add(user)
           db.session.commit()
-          session['user_name'] = user.user_name
-          print("this is user" +  str(user))
+          session['user_name'] = user_name
+          
           return redirect("/test")
       
       else:
             return render_template('signup.html')
       
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST', 'GET'])#don't see right now what is wrong here
 def login():
-
+        
       if request.method == 'POST':
-          print("alphaexecute")
+          
           user_name = request.form['user_name']
           password = request.form['password']
           user = User.query.filter_by(user_name=user_name).first()
+          print("this is user in login function" + str(user))
+
+          
 
           if user_name != user:
               flash('Please register for an account to begin blogging.')
+              print("user later in login function" + str(user))
               return redirect('/signup')
       
           if password != password:
-              flash('Passwords do not match')
+              flash('Password does not match')
               return redirect('/signup')
-            
           if user and user.password == password:
               session['user_name'] = user_name
               flash("Logged in")
               
-              return redirect('/addconfirm', user_name=user_name, password=password)
+              return redirect('/addconfirm.html', user_name=user_name, password=password)
+
+         
        
       return render_template('login.html')
 """
@@ -115,7 +113,8 @@ def index():
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
 
-      return redirect('/blog.html')
+    del session['user_name']
+    return redirect("/")
 
 
 
@@ -129,19 +128,18 @@ def test():
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
       
-      #app must acquire identity of a logged in user here as they enter their blog
-      #code below might be failing because db is not acquiring anything
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
       if request.method == 'POST':
        
         title = request.form['title']
-        blog = request.form['blog'] 
+        blog = request.form['blog']
+         
         new_blog_object = Blog(title, blog, owner)
         db.session.add(new_blog_object)      
         db.session.commit()
 
-      return render_template('addconfirm.html', new_blog_object=new_blog_object)       
+      return render_template('addconfirm.html', title=title, blog=blog, new_blog_object=new_blog_object)       
 
 @app.route('/display/<int:post_id>', methods=['POST', 'GET'])
 def display(post_id):
