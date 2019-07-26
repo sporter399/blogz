@@ -92,7 +92,7 @@ def login():
               flash('Password does not match')
               return redirect('/signup')
           if existing_user and existing_user.password == password:
-              session['user_name'] = existing_user
+              session['user_name'] = user_name
               print("do i execute")
               flash("Logged in")
               
