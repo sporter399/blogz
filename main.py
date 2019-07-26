@@ -81,24 +81,22 @@ def login():
           
           user_name = request.form['user_name']
           password = request.form['password']
-          user = User.query.filter_by(user_name=user_name).first()
-          print("this is user in login function" + str(user))
+          existing_user = User.query.filter_by(user_name=user_name).first()
 
-          
-
-          if user_name != user:
+          if not existing_user:
               flash('Please register for an account to begin blogging.')
-              print("user later in login function" + str(user))
+              
               return redirect('/signup')
       
           if password != password:
               flash('Password does not match')
               return redirect('/signup')
-          if user and user.password == password:
-              session['user_name'] = user_name
+          if existing_user and existing_user.password == password:
+              session['user_name'] = existing_user
+              print("do i execute")
               flash("Logged in")
               
-              return redirect('/addconfirm.html', user_name=user_name, password=password)
+          return render_template('addconfirm.html')
 
          
        
