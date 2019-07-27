@@ -24,6 +24,7 @@ class User(db.Model):
         self.user_name = user_name
         self.password = password
 
+     
 
 class Blog(db.Model):
 
@@ -37,6 +38,13 @@ class Blog(db.Model):
        self.title = title
        self.blog = blog
        self.owner = owner
+
+    """
+
+    def __repr__(self):
+        return '<User %r>' % self.owner
+    """
+
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -55,11 +63,11 @@ def signup():
           if password != verify:
               flash('passwords did not match')
               return redirect('/signup')
-          if (len(user_name) == 3) or (user_name.strip() == ""):
-              flash("User names must contain at least 3 characters.")
+          if (len(user_name) <= 3) or (user_name.strip() == ""):
+              flash("User names must contain at least 3 characters.")#this message shows password error but why?
               return redirect('/signup')
         
-          if (len(password) == 3) or (password.strip() == ""):
+          if (len(password) <= 3) or (password.strip() == ""):
               flash("Passwords must contain at least 3 characters.")
               return redirect('/signup')
         
@@ -74,8 +82,10 @@ def signup():
             return render_template('signup.html')
       
 
-@app.route('/login', methods=['POST', 'GET'])#don't see right now what is wrong here
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    #established user name with incorrect password does not reroute correctly here
+    #also, when user posts a blog without logging in, it crashes as opposed to appropriate redirection and message for user
         
       if request.method == 'POST':
           
@@ -128,26 +138,31 @@ def addconfirm():
       
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
+      
       if request.method == 'POST':
        
         title = request.form['title']
         blog = request.form['blog']
-         
+        owner_user_name = owner.user_name
         new_blog_object = Blog(title, blog, owner)
         db.session.add(new_blog_object)      
         db.session.commit()
 
-      return render_template('addconfirm.html', title=title, blog=blog, new_blog_object=new_blog_object)       
+      return render_template('addconfirm.html', title=title, blog=blog, owner_user_name=owner_user_name, new_blog_object=new_blog_object)       
 
 @app.route('/display/<int:post_id>', methods=['POST', 'GET'])
 def display(post_id):
 
       display_list = []
 
+      
       displayed_blog_object = Blog.query.filter_by(id=post_id).first()
+      owner = User.query.filter_by(id=displayed_blog_object.owner_id).first()
+      print("this is owner"   + str(owner))
+      owner_user_name = owner.user_name
       display_list.append(displayed_blog_object)
      
-      return render_template('blogdisplay.html', display_list=display_list)
+      return render_template('blogdisplay.html', display_list=display_list, owner_user_name=owner_user_name)
 
 
 @app.route('/', methods=['POST', 'GET'])
