@@ -151,34 +151,26 @@ def addconfirm():
         title = request.form['title']
         blog = request.form['blog']
         owner_user_name = owner.user_name
+        
         new_blog_object = Blog(title, blog, owner)
         db.session.add(new_blog_object)      
         db.session.commit()
+        user_id = owner.id
 
-      return render_template('addconfirm.html', title=title, blog=blog, owner_user_name=owner_user_name, new_blog_object=new_blog_object)       
+      return render_template('addconfirm.html', title=title, blog=blog, owner_user_name=owner_user_name, user_id=user_id, new_blog_object=new_blog_object)       
 
 @app.route('/display/<int:user_id>', methods=['POST', 'GET'])
 def display(user_id):
 
+     #the html here needs the Main and Add Blog links, like every page does
+
       owner = User.query.filter_by(id=user_id).first()
-      owner_user_name = owner.user_name
-
-      #display_list = []
-
-      
+      owner_user_name = owner.user_name   
       users_blogs = Blog.query.filter_by(owner_id=user_id).all()
 
       print("these are usersblogs"  + str(users_blogs))
        
-      """
-
-      for objects in users_blogs:
       
-        display_list.append(users_blogs)
-
-        print(display_list)
-      """
-     
       return render_template('userbloglist.html', users_blogs=users_blogs, owner_user_name=owner_user_name)
 
 
