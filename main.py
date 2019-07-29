@@ -92,7 +92,7 @@ def login():
     
       
       if request.method == 'POST':
-          print("afterlogin post request")
+          
           
           user_name = request.form['user_name']
           password = request.form['password']
@@ -111,8 +111,7 @@ def login():
               session['user_name'] = user_name
               
               flash("Logged in")
-              
-          return render_template('addconfirm.html')
+              return redirect('/test')
 
          
        
@@ -141,7 +140,7 @@ def test():
 
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
-    #now we want a path from add confirm to link of user, displaying all of their blogs
+    #successful login directs to blogeneter
       
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
