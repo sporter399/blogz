@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+{% for var in users_blogs %}
+        
+        
+        <p>{{var.title}}</p>
+        <p>{{var.blog}}</p>
+        
+        {% endfor %}
+
+</br>
+<p>written by </p>
+</br>
+        <p> {{owner_user_name}} </p>
+
+{% endblock %}

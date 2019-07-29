@@ -2,22 +2,18 @@
 
 {% block content %}
 
-    <h1><a href="/">Main Blog Page</a> <a href="/test">Add Blog Entry</a> <a href="/login">Login</a>  </h1>     
+    <h1><a href="/">Main Blog Page</a> <a href="/test">Add Blog Entry</a>   </h1>     
 
     <h1 align="center">Build A Blog</h1>
     
    
   
     
-        {% for var in loop_queries %}
+        {% for var in all_users %}
         
-        <li style="font-size: 30px; list-style-type:none;"><a href="/display/{{var.id}}" >{{var.title}}</a> </li>
-        <br>
-          
-        <li style="list-style-type:none;"></li>{{var.blog}}</li>
-        <br>
-        <br>
-        <br>
+        <li style="font-size: 30px; list-style-type:none;"><a href="/display/{{var.id}}" >{{var.user_name}}</a> </li>
+        <p>{{var.id}}</p>
+        <form action="display/{{var.id}}" method="post"></form>
         {% endfor %}
         
     </ul>

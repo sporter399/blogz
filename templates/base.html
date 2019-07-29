@@ -10,7 +10,10 @@
                         <input type="submit" value="Log Out" />
                       </form>
                     {% else %}
-                      <a href="/login">login</a> | <a href="/signup">register</a>
+                       <a href="/login">login</a> | <a href="/signup">register</a>
+                        <form action="/login" method="post"></form>
+                        <form action="/signup" method="post"></form>
+                        
                     {% endif %}
                   </div>
 

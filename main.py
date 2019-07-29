@@ -45,6 +45,11 @@ class Blog(db.Model):
         return '<User %r>' % self.owner
     """
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'signup', 'index', 'display']
+    if request.endpoint not in allowed_routes and 'user_name' not in session:
+        return redirect('/login')
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -84,26 +89,27 @@ def signup():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    #established user name with incorrect password does not reroute correctly here
-    #also, when user posts a blog without logging in, it crashes as opposed to appropriate redirection and message for user
-        
+    
+      
       if request.method == 'POST':
+          print("afterlogin post request")
           
           user_name = request.form['user_name']
           password = request.form['password']
           existing_user = User.query.filter_by(user_name=user_name).first()
-
+          
           if not existing_user:
+              
               flash('Please register for an account to begin blogging.')
               
               return redirect('/signup')
       
-          if password != password:
+          if not existing_user.password:
               flash('Password does not match')
-              return redirect('/signup')
+              return redirect('/login')
           if existing_user and existing_user.password == password:
               session['user_name'] = user_name
-              print("do i execute")
+              
               flash("Logged in")
               
           return render_template('addconfirm.html')
@@ -129,12 +135,13 @@ def logout():
 @app.route('/test', methods=['POST', 'GET'])
 def test():
 
-      
      
-      return render_template('blogenter.html',title="Title for your new blog:", blog="Your blog")       
+
+        return render_template('blogenter.html',title="Title for your new blog:", blog="Your blog")       
 
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
+    #now we want a path from add confirm to link of user, displaying all of their blogs
       
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
@@ -150,35 +157,47 @@ def addconfirm():
 
       return render_template('addconfirm.html', title=title, blog=blog, owner_user_name=owner_user_name, new_blog_object=new_blog_object)       
 
-@app.route('/display/<int:post_id>', methods=['POST', 'GET'])
-def display(post_id):
+@app.route('/display/<int:user_id>', methods=['POST', 'GET'])
+def display(user_id):
 
-      display_list = []
+      owner = User.query.filter_by(id=user_id).first()
+      owner_user_name = owner.user_name
+
+      #display_list = []
 
       
-      displayed_blog_object = Blog.query.filter_by(id=post_id).first()
-      owner = User.query.filter_by(id=displayed_blog_object.owner_id).first()
-      print("this is owner"   + str(owner))
-      owner_user_name = owner.user_name
-      display_list.append(displayed_blog_object)
+      users_blogs = Blog.query.filter_by(owner_id=user_id).all()
+
+      print("these are usersblogs"  + str(users_blogs))
+       
+      """
+
+      for objects in users_blogs:
+      
+        display_list.append(users_blogs)
+
+        print(display_list)
+      """
      
-      return render_template('blogdisplay.html', display_list=display_list, owner_user_name=owner_user_name)
+      return render_template('userbloglist.html', users_blogs=users_blogs, owner_user_name=owner_user_name)
+
+
 
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
-    blogs = db.session.query(Blog).all()
+    users = db.session.query(User).all()
     
     counter = 1
-    loop_queries = []
-    for objects in blogs:
-      loop_query = Blog.query.filter_by(id=counter).first()
+    all_users = []
+    for objects in users:
+      user = User.query.filter_by(id=counter).first()
       counter += 1
-      loop_queries.append(loop_query)
+      all_users.append(user)
     
     
-    return render_template('blog.html',loop_queries=loop_queries)
+    return render_template('blog.html',all_users=all_users)
   
 
 
