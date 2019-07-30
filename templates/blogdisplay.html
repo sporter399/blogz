@@ -10,8 +10,9 @@
         <li style="list-style-type:none;">{{var.blog}}</li>
 
         </br>
-        <li style="font-size: 30px; list-style-type:none;"><a href="/display/{{owner_user_name}}" >{{owner_user_name}}</a> </li>
-
+        <p>Written by</p>
+        <li style="font-size: 30px; list-style-type:none;"><a href="/display/{{user_id}}" >{{returned_name}}</a> </li>
+        <!--line above is not appearing, doing nothing-->
 
         {% endfor %}
 

@@ -177,9 +177,16 @@ def blog_display(post_id):
       display_list = []
 
       displayed_blog_object = Blog.query.filter_by(id=post_id).first()
+      user_id = displayed_blog_object.owner_id
+      #print("this is cross id" + str(cross_name))
+      user_filter = User.query.filter_by(id=user_id).first()
+      returned_name = user_filter.user_name
+      print("this is returned name"    + returned_name)
       display_list.append(displayed_blog_object)
-     
-      return render_template('blogdisplay.html', display_list=display_list)
+
+
+     #look at the code after blogentry, it works well
+      return render_template('blogdisplay.html', display_list=display_list, returned_name=returned_name, user_id=user_id)
 
 
 
