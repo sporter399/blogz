@@ -195,7 +195,7 @@ def blog_display(post_id):
 def display(user_id):
 
       #still don't have links on blog titles here
-      #looks like an easy fix in the userbloglist.html
+      #author link looks good
       owner = User.query.filter_by(id=user_id).first()
       owner_user_name = owner.user_name   
       users_blogs = Blog.query.filter_by(owner_id=user_id).all()
