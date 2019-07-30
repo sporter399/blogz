@@ -185,7 +185,7 @@ def blog_display(post_id):
       display_list.append(displayed_blog_object)
 
 
-     #look at the code after blogentry, it works well
+     
       return render_template('blogdisplay.html', display_list=display_list, returned_name=returned_name, user_id=user_id)
 
 
@@ -194,12 +194,13 @@ def blog_display(post_id):
 @app.route('/display/<int:user_id>', methods=['POST', 'GET'])
 def display(user_id):
 
-
+      #still don't have links on blog titles here
+      #looks like an easy fix in the userbloglist.html
       owner = User.query.filter_by(id=user_id).first()
       owner_user_name = owner.user_name   
       users_blogs = Blog.query.filter_by(owner_id=user_id).all()
             
-      return render_template('userbloglist.html', users_blogs=users_blogs, owner_user_name=owner_user_name)
+      return render_template('userbloglist.html', users_blogs=users_blogs, user_id=user_id, owner_user_name=owner_user_name)
 
 
 

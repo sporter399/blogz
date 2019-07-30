@@ -7,7 +7,7 @@
 {% for var in users_blogs %}
         
         
-        <p>{{var.title}}</p>
+        <li style="font-size: 30px; list-style-type:none;"align="center">{{var.title}}</li>
         <p>{{var.blog}}</p>
         
         {% endfor %}
@@ -15,6 +15,6 @@
 </br>
 <p>written by </p>
 </br>
-        <p> {{owner_user_name}} </p>
+<li style="font-size: 30px; list-style-type:none;"><a href="/display/{{user_id}}" >{{owner_user_name}}</a> </li>
 
 {% endblock %}
