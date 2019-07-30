@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    
+    
+   
+  
+    
+        {% for var in all_blogs %}
+        
+        <li style="font-size: 30px; list-style-type:none;"><a href="/blogdisplay/{{var.id}}" >{{var.blog}}</a> </li>
+        <p>{{var.id}}</p>
+        <form action="blogdisplay" method="post"></form>
+        {% endfor %}
+        
+    </ul>
+
+    
+
+
+    
+
+{% endblock %}

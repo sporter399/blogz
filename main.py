@@ -39,11 +39,25 @@ class Blog(db.Model):
        self.blog = blog
        self.owner = owner
 
-    """
+   
 
-    def __repr__(self):
-        return '<User %r>' % self.owner
-    """
+@app.route('/allblogs', methods=['POST', 'GET'])
+def all_blogs():
+
+    
+
+    blogs = db.session.query(Blog).all()
+    
+    counter = 1
+    all_blogs = []
+    for objects in blogs:
+      blog = Blog.query.filter_by(id=counter).first()
+      counter += 1
+      all_blogs.append(blog)
+    
+    
+    return render_template('allblogs.html',all_blogs=all_blogs)
+  
 
 @app.before_request
 def require_login():
@@ -68,8 +82,8 @@ def signup():
           if password != verify:
               flash('passwords did not match')
               return redirect('/signup')
-          if (len(user_name) <= 3) or (user_name.strip() == ""):
-              flash("User names must contain at least 3 characters.")#this message shows password error but why?
+          if (len(user_name) < 3) or (user_name.strip() == ""):
+              flash("User names must contain at least 3 characters.")
               return redirect('/signup')
         
           if (len(password) <= 3) or (password.strip() == ""):
@@ -116,12 +130,7 @@ def login():
          
        
       return render_template('login.html')
-"""
-@app.route('/', methods=['POST', 'GET'])
-def index():
 
-      return
-"""
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
@@ -140,13 +149,14 @@ def test():
 
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
-    #successful login directs to blogeneter
+
+   
       
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
       
       if request.method == 'POST':
-       
+        print("is this a post request")
         title = request.form['title']
         blog = request.form['blog']
         owner_user_name = owner.user_name
@@ -156,20 +166,32 @@ def addconfirm():
         db.session.commit()
         user_id = owner.id
 
+     
+
+
       return render_template('addconfirm.html', title=title, blog=blog, owner_user_name=owner_user_name, user_id=user_id, new_blog_object=new_blog_object)       
+
+@app.route('/blogdisplay/<int:post_id>', methods=['POST', 'GET'])
+def blog_display(post_id):
+
+      display_list = []
+
+      displayed_blog_object = Blog.query.filter_by(id=post_id).first()
+      display_list.append(displayed_blog_object)
+     
+      return render_template('blogdisplay.html', display_list=display_list)
+
+
+
 
 @app.route('/display/<int:user_id>', methods=['POST', 'GET'])
 def display(user_id):
 
-     #the html here needs the Main and Add Blog links, like every page does
 
       owner = User.query.filter_by(id=user_id).first()
       owner_user_name = owner.user_name   
       users_blogs = Blog.query.filter_by(owner_id=user_id).all()
-
-      print("these are usersblogs"  + str(users_blogs))
-       
-      
+            
       return render_template('userbloglist.html', users_blogs=users_blogs, owner_user_name=owner_user_name)
 
 
