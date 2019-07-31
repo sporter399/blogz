@@ -44,8 +44,6 @@ class Blog(db.Model):
 @app.route('/allblogs', methods=['POST', 'GET'])
 def all_blogs():
 
-    
-
     blogs = db.session.query(Blog).all()
     
     counter = 1
@@ -150,13 +148,9 @@ def test():
 @app.route('/addconfirm', methods=['POST', 'GET'])
 def addconfirm():
 
-   
-      
       owner = User.query.filter_by(user_name=session['user_name']).first()
       
-      
       if request.method == 'POST':
-        print("is this a post request")
         title = request.form['title']
         blog = request.form['blog']
         owner_user_name = owner.user_name
@@ -166,10 +160,8 @@ def addconfirm():
         db.session.commit()
         user_id = owner.id
 
-     
-
-
-      return render_template('addconfirm.html', title=title, blog=blog, owner_user_name=owner_user_name, user_id=user_id, new_blog_object=new_blog_object)       
+      return render_template('addconfirm.html', title=title, blog=blog, 
+      owner_user_name=owner_user_name, user_id=user_id, new_blog_object=new_blog_object)       
 
 @app.route('/blogdisplay/<int:post_id>', methods=['POST', 'GET'])
 def blog_display(post_id):
@@ -178,15 +170,12 @@ def blog_display(post_id):
 
       displayed_blog_object = Blog.query.filter_by(id=post_id).first()
       user_id = displayed_blog_object.owner_id
-      #print("this is cross id" + str(cross_name))
       user_filter = User.query.filter_by(id=user_id).first()
       returned_name = user_filter.user_name
-      print("this is returned name"    + returned_name)
       display_list.append(displayed_blog_object)
 
-
-     
-      return render_template('blogdisplay.html', display_list=display_list, returned_name=returned_name, user_id=user_id)
+      return render_template('blogdisplay.html', display_list=display_list, 
+      returned_name=returned_name, user_id=user_id)
 
 
 
@@ -194,8 +183,6 @@ def blog_display(post_id):
 @app.route('/display/<int:user_id>', methods=['POST', 'GET'])
 def display(user_id):
 
-      #still don't have links on blog titles here
-      #author link looks good
       owner = User.query.filter_by(id=user_id).first()
       owner_user_name = owner.user_name   
       users_blogs = Blog.query.filter_by(owner_id=user_id).all()

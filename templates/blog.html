@@ -2,15 +2,9 @@
 
 {% block content %}
 
-    
-    
-   
-  
-    
         {% for var in all_users %}
         
         <li style="font-size: 30px; list-style-type:none;"><a href="/display/{{var.id}}" >{{var.user_name}}</a> </li>
-        <p>{{var.id}}</p>
         <form action="display/{{var.id}}" method="post"></form>
         {% endfor %}
         
