@@ -78,7 +78,7 @@ def signup():
               flash('yikes! "' + user_name + '" is already taken and password reminders are not implemented')
               return redirect('/signup')
           if password != verify:
-              flash('passwords did not match')
+              flash('passwords did not match and this is flexblogz')
               return redirect('/signup')
           if (len(user_name) < 3) or (user_name.strip() == ""):
               flash("User names must contain at least 3 characters.")
